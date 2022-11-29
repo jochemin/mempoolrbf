@@ -11,7 +11,7 @@ logfile = open('./.bitcoin/debug.log','r')
 while(True):
     lines = logfile.readlines()
     for line in lines:
-        if line.startswith('2022-11-29:08'):
+        if line.startswith('2022-11-29T08'):
             if substring1 in line:
                 #print(line)
                 line_list = line.split(' ')
