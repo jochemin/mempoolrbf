@@ -51,4 +51,4 @@ while(True):
                 curs = conn.cursor()
                 curs.execute("INSERT INTO Rejected (time, TXID, Reason) values(?,?,?)",(hour,txid,reason))
                 conn.commit()
-                time.sleep(0.2)
+            time.sleep(0.2)
