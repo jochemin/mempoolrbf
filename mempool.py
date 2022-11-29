@@ -11,10 +11,10 @@ logfile = open('./.bitcoin/debug.log','r')
 while(True):
     lines = logfile.readlines()
     for line in lines:
-        print (line)
-        if line.startswith('2022-11-29T09:5'):
+        #print (line)
+        if line.startswith('2022-11-30T'):
             if substring1 in line:
-                print(line)
+                #print(line)
                 line_list = line.split(' ')
                 txid = line_list[5]
                 hour = line_list[0]
@@ -26,7 +26,7 @@ while(True):
                 curs.execute("INSERT INTO Accepted (time, txid, RBF) values(?,?,?)",(hour,txid,sequence))
                 conn.commit()
             if substring2 in line:
-                print(line)
+                #print(line)
                 line_list = line.split(' ')
                 origin_txid = line_list[4]
                 replaced_txid = line_list[6]
@@ -39,7 +39,7 @@ while(True):
                 curs.execute("INSERT INTO Replaced (time, Original_tx, New_tx) values(?,?,?)",(hour,origin_txid,replaced_txid   ))
                 conn.commit()
             if substring3 in line:
-                print(line)
+                #print(line)
                 line_list = line.split(' ')
                 txid = line_list[2]
                 reason = line_list[8]
