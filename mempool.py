@@ -9,10 +9,11 @@ substring3 = 'mempoolrej'
 logfile = open('./.bitcoin/debug.log','r')
 
 while(True):
+    time.sleep(0.2)
     lines = logfile.readlines()
     for line in lines:
         #print (line)
-        if line.startswith('2022-11-30T'):
+        if line.startswith('2022-11-30T12:1'):
             if substring1 in line:
                 #print(line)
                 line_list = line.split(' ')
@@ -51,4 +52,3 @@ while(True):
                 curs = conn.cursor()
                 curs.execute("INSERT INTO Rejected (time, TXID, Reason) values(?,?,?)",(hour,txid,reason))
                 conn.commit()
-            time.sleep(0.2)
