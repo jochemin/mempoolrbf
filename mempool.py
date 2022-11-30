@@ -1,6 +1,6 @@
 # Mempool
 import time
-import os
+import subprocess
 from sqlite3 import connect
 
 substring1 = 'AcceptToMemoryPool:'
@@ -13,15 +13,21 @@ while(True):
     lines = logfile.readlines()
     for line in lines:
         #print (line)
-        if line.startswith('2022-11-30T12:1'):
+        if line.startswith('2022-11-30T'):
             if substring1 in line:
                 #print(line)
                 line_list = line.split(' ')
                 txid = line_list[5]
                 hour = line_list[0]
                 command = 'bitcoin-cli getrawtransaction {0} 1 | jq .vin[0].sequence'.format (txid.rstrip())
-                sequence = os.popen(command)
-                sequence = int(sequence.read().strip())
+                try:
+                    sequence = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+                    sequence_string = str(sequence, 'UTF-8')
+                    if not "error" in sequence_string:
+                        sequence = int(sequence.strip())
+                        #print ( txid.rstrip()+ ' ' , sequence)
+                except subprocess.CalledProcessError:
+                    pass
                 conn = connect('./mempool.db')
                 curs = conn.cursor()
                 curs.execute("INSERT INTO Accepted (time, txid, RBF) values(?,?,?)",(hour,txid,sequence))
@@ -32,9 +38,6 @@ while(True):
                 origin_txid = line_list[4]
                 replaced_txid = line_list[6]
                 hour = line_list[0]
-                #command = 'bitcoin-cli getrawtransaction {0} 1 | jq .vin[0].sequence'.format (replaced_txid.rstrip())
-                #sequence = os.popen(command)
-                #sequence = int(sequence.read().strip())
                 conn = connect('./mempool.db')
                 curs = conn.cursor()
                 curs.execute("INSERT INTO Replaced (time, Original_tx, New_tx) values(?,?,?)",(hour,origin_txid,replaced_txid   ))
@@ -45,9 +48,6 @@ while(True):
                 txid = line_list[2]
                 reason = line_list[8]
                 hour = line_list[0]
-                #command = 'bitcoin-cli getrawtransaction {0} 1 | jq .vin[0].sequence'.format (replaced_txid.rstrip())
-                #sequence = os.popen(command)
-                #sequence = int(sequence.read().strip())
                 conn = connect('./mempool.db')
                 curs = conn.cursor()
                 curs.execute("INSERT INTO Rejected (time, TXID, Reason) values(?,?,?)",(hour,txid,reason))
