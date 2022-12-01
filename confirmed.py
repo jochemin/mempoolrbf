@@ -13,7 +13,7 @@ for row in curs.execute('SELECT TXID from Accepted'):
     print(row[0], ' ',data_json["block_height"])
     mined = str(data_json["block_height"])
     print(mined)
-    curs.execute("UPDATE Accepted SET MINED=? WHERE txid=?",(mined, row[0]))
+    curs.execute("UPDATE Accepted SET Mined=? WHERE txid=?",(mined, row[0]))
     #conn.commit()
 
 
