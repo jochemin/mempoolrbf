@@ -19,13 +19,17 @@ while(True):
                 line_list = line.split(' ')
                 txid = line_list[5]
                 hour = line_list[0]
-                command = 'bitcoin-cli getrawtransaction {0} 1 | jq .vin[0].sequence'.format (txid.rstrip())
+                command = 'bitcoin-cli getrawtransaction {0} 1 | jq .vin[].sequence'.format (txid.rstrip())
                 try:
                     sequence = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
                     sequence_string = str(sequence, 'UTF-8')
                     if not "error" in sequence_string:
-                        sequence = int(sequence.strip())
-                        #print ( txid.rstrip()+ ' ' , sequence)
+                        vin = sequence_string.split('\n')
+                        int_vin = vin[:-1]
+                        int_vin = list(map(int, int_vin))
+                        for x in int_vin:
+                            if x < 4294967295:
+                                sequence = x
                 except subprocess.CalledProcessError:
                     pass
                 conn = connect('./mempool.db')
