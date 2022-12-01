@@ -13,7 +13,7 @@ while(True):
     lines = logfile.readlines()
     for line in lines:
         #print (line)
-        if line.startswith('2022-11-30T'):
+        if line.startswith('2022-12-01T09:4'):
             if substring1 in line:
                 #print(line)
                 line_list = line.split(' ')
