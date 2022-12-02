@@ -7,7 +7,7 @@ curs1 = conn.cursor()
 curs2 = conn.cursor()
 
 for row in curs1.execute('SELECT TXID from Accepted'):
-    print(row[0])
+    #print(row[0])
     command = 'bitcoin-cli getrawtransaction {0} 1 | jq .confirmations'.format (row[0])
     try:
         # Comprobamos la salida del comando
@@ -19,13 +19,16 @@ for row in curs1.execute('SELECT TXID from Accepted'):
         # Si no hay ningún error en la salida del comando
         if not "error" in confirmations_string:
             # Cambiamos el tipo a int para tratarlo como un número
-            print(confirmations_string)
+            #print(confirmations_string)
             int_confirmations = int(confirmations_string)
             if int_confirmations > 0:
                 # Si encontramos un valor menor lo asignamos a la variable sequence
                 confirmed = 1
                 curs2.execute("UPDATE Accepted SET Mined=? WHERE txid=?",(confirmed, row[0]))
                 conn.commit()
+                print ("La transacción "+row[0]+" está confirmada")
+        else:
+            print ("La transacción "+row[0]+" no está confirmada")
     except subprocess.CalledProcessError:
         # Lo mismo me da que me da lo mismo
         pass
